@@ -21,6 +21,12 @@ slate_psda *cse_par_step(slate_psda *part);
 /// recomposes by CRT.
 slate_psda *cse_par_recompose(slate_psda *parts);
 
-/// The schedule: decompose `whole`, step each part (collecting from `pool`), recompose. The parts are
-/// independent by construction. Returns the recomposed whole; the original is untouched.
+/// Map cse_par_step over the independent `parts`, collecting the results in order (cells from `pool`).
+/// The schedule seam, a hole: the weak default is the serial walk, one part at a time. Because the
+/// parts do not interfere, a concurrent floor (CSE-Accel) overrides this to run them at once — the
+/// result is identical, only the waiting is gone.
+slate_psda *cse_par_map(slate_psda *parts, slate_psda **pool);
+
+/// The whole pass: decompose `whole` into independent parts, map the step over them, recompose. Returns
+/// the recomposed whole; the original is untouched.
 slate_psda *cse_par_run(slate_psda *whole, slate_psda **pool);
